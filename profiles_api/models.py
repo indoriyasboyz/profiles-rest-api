@@ -6,17 +6,18 @@ from django.contrib.auth.models import BaseUserManager
 
 # Create your models here.
 class UserProfileManager(BaseUserManager):
-    """manager for user profile"""
+    """Manager for user profiles"""
+
     def create_user(self, email, name, password=None):
-        """create a new user profile"""
+        """Create a new user profile"""
         if not email:
-            raise ValueError("user must have an email address")
+            raise ValueError('Users must have an email address')
 
         email = self.normalize_email(email)
-        user = self.model(email=email, name=name)
+        user = self.model(email=email, name=name,)
 
         user.set_password(password)
-        user.save(user=self._db)
+        user.save(using=self._db)
 
         return user
 
@@ -31,8 +32,9 @@ class UserProfileManager(BaseUserManager):
         return user
 
 
+
 class UserProfile(AbstractBaseUser, PermissionsMixin):
-    """datebase models for users in the system"""
+    """Database model for users in the system"""
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
@@ -41,16 +43,16 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     objects = UserProfileManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELD = ['name']
+    REQUIRED_FIELDS = ['name']
 
     def get_full_name(self):
-        """retrive full name of user"""
+        """Retrieve full name for user"""
         return self.name
 
     def get_short_name(self):
-        """retrive short name of user"""
+        """Retrieve short name of user"""
         return self.name
 
     def __str__(self):
-        """"returning the string representation of the user"""
+        """Return string representation of user"""
         return self.email
